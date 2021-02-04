@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .student-details {
+        overflow-y: hidden;
+        max-height: 0;
+        -webkit-transition: all 1s;
+        -o-transition: all 1s;
+        transition: all  1s;
+    }
+    .student-details.in{
+        max-height:500px;
+    }
+</style>
+
+
+
+<div class="container body-content" ng-controller="studentsCtrl">
+    <table st-table="displayedCollection" st-safe-src="studentsCollection" class="table table-bordered table-hover" style="cursor:pointer;">
+        <caption class="smartTableCaption">
+            Students
+        </caption>
+        
+        <thead>
+            <tr>
+                <th>
+                    <button type="button" data-toggle="modal" data-target="#pop-modal" class="btn btn-sm btn-primary">
+                        Add
+                    </button>
+                </th>
+                <th>Name</th>
+                <th>Birthday</th>
+                <th>RegNumber</th>
+                <th></th>
+            </tr>
+
+            @*<tr>
+                <td></td>
+                <td>
+                    <input style="height: 24px; padding-right: 1px; width: 100%" st-search="campaign_name" autofocus="autofocus" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="countryNameEn" autofocus="autofocus" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="running_ops" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="networkName" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="conversion_name" />
+                </td>
+                <td style="max-width: 100px;">
+                    <custom-date predicate="date" tableparent="campaigns_container"></custom-date>
+                </td>
+                <td style="max-width: 100px;">
+                    <custom-date predicate="update_date" tableparent="campaigns_container"></custom-date>
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="status" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="price" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="currency" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="campaignId" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="campaign_url" />
+                </td>
+                <td>
+                    <input style="padding-right: 1px; height: 24px; width: 100%" st-search="main_url" />
+                </td>
+            </tr>*@
+
+        </thead>
+        <tbody>
+            @*<tr class="action-mobile">
+                <td>
+                    <button ng-show="can_create" type="button" data-toggle="modal" data-target="#campaigns_modal" class="btn btn-sm btn-primary">
+                        Add
+                    </button>
+                </td>
+                <td>
+                    <input style="height: 30px !important;margin-top:1px;padding-left:2px; width: 100%;" st-search="" placeholder="Global Search..." autofocus="autofocus" />
+                </td>
+            </tr>*@
+            <tr ng-repeat-start="row in displayedCollection">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    @*<form id="rowForm" editable-form name="rowform" ng-show="rowform.$visible" onbeforesave="updateCampaign(row)" class="form-buttons form-inline" shown="inserted == row">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-sm">
+                            Save
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel();" class="btn btn-default btn-sm">
+                            Cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                        <button ng-show="can_edit" class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
+                        <button ng-show="can_create" class="btn btn-primary btn-sm" ng-click="removeCampaign(row)">Delete</button>
+                    </div>*@
+                </td>
+                <td>{{row.Name}}</td>
+                <td>{{row.Birthday | date:'yyyy-MM-dd'}}</td>
+                <td>{{row.RegNumber}}</td>
+                <td>
+                    <div class="details-el">
+                        <button class="btn btn-primary btn-sm" ng-click="showDetails('student-details-'+row.Id+'-a')">Details</button>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-repeat-end>
+                <td colspan="5" style="padding:0;">
+                    <div id="student-details-{{row.Id}}-a" class="student-details">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                            </tr>
+                            <tr ng-repeat="subject in row.Subjects">
+                                <td>{{subject.Title}}</td>
+                                <td>{{subject.Grade}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            @*<tr>
+                <td colspan="14" class="text-center">
+                    <div st-pagination="" st-items-by-page="10" st-displayed-pages="7"></div>
+                </td>
+            </tr>*@
+
+        </tbody>
+    </table>
+    <pop-modal title="Add Student">
+        <form ng-submit="addStudent($event)">
+            <div class="form-group">
+                <label for="Name">Name:</label>
+                <input type="text" ng-model="student.name" required class="form-control" placeholder="Enter name" id="name">
+            </div>
+            <div class="form-group">
+                <label for="Birthday">Birthday:</label>
+                <datepicker date-format="yyyy-MM-dd">
+                    <input type="text" ng-model="student.birthday" required class="form-control" placeholder="Enter birthday" id="birthday">
+                </datepicker>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+    </pop-modal>
+</div>
+
+<script>
+    app.controller('studentsCtrl', ['$scope','$http', studentsController]);
+</script>
+

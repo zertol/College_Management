@@ -29,11 +29,6 @@ namespace College_Management.Controllers
             return View();
         }
 
-        [HttpGet]
-        public JsonResult GetData()
-        {
-            var students = context.Students.ToList();
-            return Json(students,JsonRequestBehavior.AllowGet);
-        }
+        
     }
 }
