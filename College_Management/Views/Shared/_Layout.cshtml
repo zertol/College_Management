@@ -9,10 +9,13 @@
     @Scripts.Render("~/bundles/angular")
 
     <link rel="stylesheet" href="~/Scripts/Angular-Datepicker/angular-datepicker.min.css" />
+    <link rel="stylesheet" href="~/Scripts/angular_xedit/css/xeditable.min.css" />
 
+    <script src="~/Scripts/angular-sanitize.min.js"></script>
     <script src="~/Scripts/Angular-Datepicker/angular-datepicker.min.js"></script>
-    <script src="~/Scripts/app.js"></script>
     <script src="~/Scripts/Smart-Table-master/dist/smart-table.min.js"></script>
+    <script src="~/Scripts/angular_xedit/js/xeditable.min.js"></script>
+    <script src="~/Scripts/app.js"></script>
 
 </head>
 <body ng-app="collegeApp">
@@ -25,6 +28,9 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     @Html.ActionLink("Students", "Index", "Students", new { area = "" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item active">
+                    @Html.ActionLink("Subjects", "Index", "Subjects", new { area = "" }, new { @class = "nav-link" })
                 </li>
             </ul>
         </div>

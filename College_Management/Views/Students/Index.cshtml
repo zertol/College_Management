@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Students";
 }
 
 <style>
@@ -19,6 +19,7 @@
 
 
 <div class="container body-content" ng-controller="studentsCtrl">
+    <div class="alert alert-danger" ng-show="error"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
     <table st-table="displayedCollection" st-safe-src="studentsCollection" class="table table-bordered table-hover" style="cursor:pointer;">
         <caption class="smartTableCaption">
             Students
@@ -95,7 +96,7 @@
             <tr ng-repeat-start="row in displayedCollection">
                 <td style="white-space: nowrap">
                     <!-- form -->
-                    @*<form id="rowForm" editable-form name="rowform" ng-show="rowform.$visible" onbeforesave="updateCampaign(row)" class="form-buttons form-inline" shown="inserted == row">
+                    <form oncancel="cancelEdit()" onbeforesave="editStudent($data, row)" editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == row">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-sm">
                             Save
                         </button>
@@ -104,13 +105,13 @@
                         </button>
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
-                        <button ng-show="can_edit" class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
-                        <button ng-show="can_create" class="btn btn-primary btn-sm" ng-click="removeCampaign(row)">Delete</button>
-                    </div>*@
+                        <button class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
+                        <button class="btn btn-primary btn-sm" ng-click="removeStudent(row.Id)">Delete</button>
+                    </div>
                 </td>
-                <td>{{row.Name}}</td>
-                <td>{{row.Birthday | date:'yyyy-MM-dd'}}</td>
-                <td>{{row.RegNumber}}</td>
+                <td><span editable-text="row.Name" e-name="Name" e-form="rowform" e-required>{{row.Name}}</span></td>
+                <td><span editable-date="row.Birthday" e-name="Birthday" e-form="rowform" e-required>{{row.Birthday | date:'yyyy-MM-dd'}}</span></td>
+                <td><span editable-number="row.RegNumber" e-name="RegNumber" e-form="rowform" e-required>{{row.RegNumber}}</span></td>
                 <td>
                     <div class="details-el">
                         <button class="btn btn-primary btn-sm" ng-click="showDetails('student-details-'+row.Id+'-a')">Details</button>
@@ -159,6 +160,6 @@
 </div>
 
 <script>
-    app.controller('studentsCtrl', ['$scope','$http', studentsController]);
+    app.controller('studentsCtrl', ['$scope', '$http', '$q', studentsController]);
 </script>
 

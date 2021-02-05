@@ -69,19 +69,21 @@ namespace College_Management.Controllers
         }
 
         // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Name,Birthday,RegNumber")] Student student)
+        public async Task<JsonResult> Edit([Bind(Include = "Id,Name,Birthday,RegNumber")] Student student)
         {
-            if (ModelState.IsValid)
+            try
             {
                 db.Entry(student).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return Json(new { result = "ok", status = 200 });
             }
-            return View(student);
+            catch (Exception ex)
+            {
+                return Json(new { result = "error", status = 200, message = ex.Message.ToString() });
+            }
+               
+            
         }
 
         // GET: Students/Delete/5
@@ -101,13 +103,23 @@ namespace College_Management.Controllers
 
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<JsonResult> DeleteConfirmed(int? id)
         {
-            Student student = await db.Students.FindAsync(id);
-            db.Students.Remove(student);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            if (id == null)
+            {
+                throw new Exception("Parameter id should not be null!");
+            }
+            try
+            {
+                Student student = await db.Students.FindAsync(id);
+                db.Students.Remove(student);
+                await db.SaveChangesAsync();
+                return Json(new { result = "ok", status = 200 });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "error", status = 200, message = ex.Message.ToString() });
+            }
         }
 
         protected override void Dispose(bool disposing)
