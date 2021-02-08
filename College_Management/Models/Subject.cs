@@ -11,11 +11,11 @@ namespace College_Management.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int SubjectId { get; set; }
 
+        public int? TeacherId { get; set; }
+
         public int CourseId { get; set; }
 
         public string Title { get; set; }
-
-        public virtual Teacher TeacherSubject { get; set; }
 
         public virtual ICollection<Enrollment> Enrollments { get; set; }
 

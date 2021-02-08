@@ -1,9 +1,9 @@
-﻿namespace College_Management.Migrations
+namespace College_Management.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialMigration : DbMigration
+    public partial class initial : DbMigration
     {
         public override void Up()
         {
@@ -21,11 +21,14 @@
                 c => new
                     {
                         SubjectId = c.Int(nullable: false),
+                        TeacherId = c.Int(nullable: false),
                         CourseId = c.Int(nullable: false),
                         Title = c.String(),
                     })
                 .PrimaryKey(t => t.SubjectId)
                 .ForeignKey("dbo.Course", t => t.CourseId, cascadeDelete: true)
+                .ForeignKey("dbo.Teacher", t => t.TeacherId, cascadeDelete: true)
+                .Index(t => t.TeacherId)
                 .Index(t => t.CourseId);
             
             CreateTable(
@@ -44,19 +47,6 @@
                 .Index(t => t.StudentId);
             
             CreateTable(
-                "dbo.Teacher",
-                c => new
-                    {
-                        SubjectId = c.Int(nullable: false),
-                        Name = c.String(),
-                        Birthday = c.DateTime(nullable: false),
-                        Salary = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.SubjectId)
-                .ForeignKey("dbo.Subject", t => t.SubjectId)
-                .Index(t => t.SubjectId);
-            
-            CreateTable(
                 "dbo.Student",
                 c => new
                     {
@@ -67,20 +57,31 @@
                     })
                 .PrimaryKey(t => t.Id);
             
+            CreateTable(
+                "dbo.Teacher",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                        Birthday = c.DateTime(nullable: false),
+                        Salary = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.Subject", "TeacherId", "dbo.Teacher");
             DropForeignKey("dbo.Enrollment", "StudentId", "dbo.Student");
             DropForeignKey("dbo.Subject", "CourseId", "dbo.Course");
-            DropForeignKey("dbo.Teacher", "SubjectId", "dbo.Subject");
             DropForeignKey("dbo.Enrollment", "SubjectId", "dbo.Subject");
-            DropIndex("dbo.Teacher", new[] { "SubjectId" });
             DropIndex("dbo.Enrollment", new[] { "StudentId" });
             DropIndex("dbo.Enrollment", new[] { "SubjectId" });
             DropIndex("dbo.Subject", new[] { "CourseId" });
-            DropTable("dbo.Student");
+            DropIndex("dbo.Subject", new[] { "TeacherId" });
             DropTable("dbo.Teacher");
+            DropTable("dbo.Student");
             DropTable("dbo.Enrollment");
             DropTable("dbo.Subject");
             DropTable("dbo.Course");

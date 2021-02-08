@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "Teachers";
+}
+
+
+
+
+<div class="container body-content" ng-controller="teachersCtrl">
+    <div class="alert alert-danger" ng-if="errors.global"><button type="button" class="close" data-dismiss="alert">&times;</button>{{errors.global}}</div>
+    <table st-table="displayedCollection" st-safe-src="teachersCollection" class="table table-bordered table-hover" style="cursor:pointer;">
+        <caption class="smartTableCaption">
+            Teachers
+        </caption>
+
+        <thead>
+            <tr>
+                <th>
+                    <button type="button" data-toggle="modal" data-target="#pop-modal" class="btn btn-sm btn-primary">
+                        Add
+                    </button>
+                </th>
+                <th>Teacher</th>
+                <th>Subject Teaching</th>
+                <th></th>
+            </tr>
+
+
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in displayedCollection">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form oncancel="cancelEdit()" onbeforesave="editTeacher($data, row)" editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == row">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-sm">
+                            Save
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel();" class="btn btn-default btn-sm">
+                            Cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                        <button class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
+                        <button class="btn btn-primary btn-sm" ng-click="removeteacher(row.teacherId)">Delete</button>
+                    </div>
+                </td>
+                <td><span editable-text="row.Name" e-name="Name" e-form="rowform" e-required>{{row.Name}}</span></td>
+                <td>{{row.Subject}}
+            </tr>
+
+        </tbody>
+    </table>
+    <pop-modal title="{{modalTitle}}">
+        <div>
+            <form ng-submit="addTeacher($event)">
+                <div class="form-group">
+                    <label for="Name">Name:</label>
+                    <input type="text" ng-model="teacher.name" required class="form-control" placeholder="Enter name" id="name">
+                </div>
+                <div class="form-group">
+                    <label for="Birthday">Birthday:</label>
+                    <datepicker date-format="yyyy-MM-dd">
+                        <input type="text" ng-model="teacher.birthday" required class="form-control" placeholder="Enter birthday" id="birthday">
+                    </datepicker>
+                </div>
+                <div class="form-group">
+                    <label for="Salary">Salary:</label>
+                    <input type="number" ng-model="teacher.salary" required class="form-control" placeholder="Enter salary" id="salary">
+                    <p class="invalid-feedback d-block" ng-if="errors.salary">{{errors.salary}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="Subject">Link Unassigned Subjects: </label>
+                    <select class="custom-select" ng-model="teacher.subjectId" ng-options="subject.SubjectId as subject.Title for subject in subjectsCollection">
+                    </select>
+                    <p class="invalid-feedback d-block" ng-if="errors.subjectId">{{errors.subjectId}}</p>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+        </div>
+    </pop-modal>
+</div>
+
+<script>
+    app.controller('teachersCtrl', ['$scope', '$http', '$q', '$compile', teachersController]);
+</script>
+

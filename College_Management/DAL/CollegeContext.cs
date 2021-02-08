@@ -23,6 +23,13 @@ namespace College_Management.DAL
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            //modelBuilder.Entity<Subject>()
+            //    .HasMany(s => s.chi)
+            //    .WithRequired( XmlSiteMapProvider=)
+            //modelBuilder.Entity<Subject>()
+            //            .HasOptional(a => a.TeacherSubject)
+            //            .WithOptionalDependent()
+            //            .WillCascadeOnDelete(true);
         }
 
         

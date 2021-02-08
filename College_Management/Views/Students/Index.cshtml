@@ -19,7 +19,7 @@
 
 
 <div class="container body-content" ng-controller="studentsCtrl">
-    <div class="alert alert-danger" ng-show="error"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
+    <div class="alert alert-danger" ng-if="error"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
     <table st-table="displayedCollection" st-safe-src="studentsCollection" class="table table-bordered table-hover" style="cursor:pointer;">
         <caption class="smartTableCaption">
             Students

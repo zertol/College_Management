@@ -19,8 +19,7 @@ namespace College_Management.Controllers
         // GET: Subjects
         public async Task<ActionResult> Index()
         {
-            var subjects = db.Subjects.Include(s => s.TeacherSubject);
-            return View(await subjects.ToListAsync());
+            return View(await db.Subjects.ToListAsync());
         }
 
         // GET: Subjects/Details/5
@@ -46,21 +45,13 @@ namespace College_Management.Controllers
         }
 
         // POST: Subjects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "SubjectId,CourseId,Title")] Subject subject)
+        public async Task<JsonResult> Create([Bind(Include = "SubjectId,TeacherId,CourseId,Title")] Subject subject)
         {
-            if (ModelState.IsValid)
-            {
-                db.Subjects.Add(subject);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.SubjectId = new SelectList(db.Teachers, "SubjectId", "Name", subject.SubjectId);
-            return View(subject);
+            db.Subjects.Add(subject);
+            await db.SaveChangesAsync();
+            subject = await db.Subjects.FindAsync(subject.SubjectId);
+            return Json(subject);
         }
 
         // GET: Subjects/Edit/5
@@ -80,20 +71,19 @@ namespace College_Management.Controllers
         }
 
         // POST: Subjects/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "SubjectId,CourseId,Title")] Subject subject)
+        public async Task<ActionResult> Edit([Bind(Include = "SubjectId,TeacherId,CourseId,Title")] Subject subject)
         {
-            if (ModelState.IsValid)
+            try
             {
                 db.Entry(subject).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return Json(new { result = "ok", status = 200 });
             }
-            ViewBag.SubjectId = new SelectList(db.Teachers, "SubjectId", "Name", subject.SubjectId);
-            return View(subject);
+            catch (Exception ex)
+            {
+                return Json(new { result = "error", status = 200, message = ex.InnerException.Message.ToString() });
+            }
         }
 
         // GET: Subjects/Delete/5
@@ -111,24 +101,25 @@ namespace College_Management.Controllers
             return View(subject);
         }
 
-        // POST: Subjects/Delete/5
+        // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<JsonResult> DeleteConfirmed(int? id)
         {
-            Subject subject = await db.Subjects.FindAsync(id);
-            db.Subjects.Remove(subject);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            try
             {
-                db.Dispose();
+                if (id == null)
+                {
+                    throw new Exception("Parameter id should not be null!");
+                }
+                Subject subject = await db.Subjects.FindAsync(id);
+                db.Subjects.Remove(subject);
+                await db.SaveChangesAsync();
+                return Json(new { result = "ok", status = 200 });
             }
-            base.Dispose(disposing);
+            catch (Exception ex)
+            {
+                return Json(new { result = "error", status = 200, message = ex.Message.ToString() });
+            }
         }
 
         [HttpGet]
@@ -136,13 +127,17 @@ namespace College_Management.Controllers
         {
             var students = db.Students.ToList();
             var subjects = db.Subjects.ToList();
+            var teachers = db.Teachers.ToList();
 
             var result = (from subject in subjects
                           select new
                           {
                               SubjectId = subject.SubjectId,
                               Title = subject.Title,
-                              Teacher = subject.TeacherSubject.Name,
+                              CourseId = subject.CourseId,
+                              Teacher = subject.TeacherId != null 
+                              ? teachers.Where(t => t.Id == subject.TeacherId).Select(t => new { Id = t.Id, Name = t.Name}).FirstOrDefault() 
+                              : new { Id= -1, Name="N/A" },
                               Students = from student in students
                                          from s in student.Enrollments.Where(x => x.SubjectId == subject.SubjectId)
                                          select new { Name = student.Name, Grade = s.Grade }
@@ -158,7 +153,7 @@ namespace College_Management.Controllers
         {
             var teachers = db.Teachers.ToList().Select(x => new
             {
-                SubjectId = x.SubjectId,
+                Id = x.Id,
                 Name = x.Name
             });
 
@@ -170,5 +165,6 @@ namespace College_Management.Controllers
 
             return Json(new { Courses = courses, Teachers = teachers }, JsonRequestBehavior.AllowGet);
         }
+
     }
 }

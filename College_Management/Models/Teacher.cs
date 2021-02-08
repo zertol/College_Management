@@ -9,9 +9,7 @@ namespace College_Management.Models
 {
     public class Teacher
     { 
-        [Key]
-        [ForeignKey("SubjectTeacher")]
-        public int SubjectId { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -19,6 +17,6 @@ namespace College_Management.Models
         public DateTime Birthday { get; set; }
          
         public int Salary { get; set; }
-        public virtual Subject SubjectTeacher { get; set; }
+        public virtual ICollection<Subject> Subjects { get; set; }
     }
 }

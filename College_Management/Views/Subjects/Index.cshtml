@@ -3,24 +3,10 @@
     ViewBag.Title = "Subjects";
 }
 
-<style>
-    .student-details {
-        overflow-y: hidden;
-        max-height: 0;
-        -webkit-transition: all 1s;
-        -o-transition: all 1s;
-        transition: all 1s;
-    }
-
-        .student-details.in {
-            max-height: 500px;
-        }
-</style>
-
 
 
 <div class="container body-content" ng-controller="subjectsCtrl">
-    <div class="alert alert-danger" ng-show="error"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
+    <div class="alert alert-danger" ng-if="errors.global"><button type="button" class="close" data-dismiss="alert">&times;</button>{{errors.global}}</div>
     <table st-table="displayedCollection" st-safe-src="subjectsCollection" class="table table-bordered table-hover" style="cursor:pointer;">
         <caption class="smartTableCaption">
             Subjects
@@ -33,6 +19,7 @@
                         Add
                     </button>
                 </th>
+                <th>Subject ID</th>
                 <th>Title</th>
                 <th>Teacher</th>
                 <th># Students Enrolled</th>
@@ -45,7 +32,7 @@
             <tr ng-repeat="row in displayedCollection">
                 <td style="white-space: nowrap">
                     <!-- form -->
-                    <form oncancel="cancelEdit()" onbeforesave="editStudent($data, row)" editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == row">
+                    <form oncancel="cancelEdit()" onbeforesave="editSubject($data, row)" editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == row">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-sm">
                             Save
                         </button>
@@ -55,12 +42,13 @@
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
                         <button class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
-                        <button class="btn btn-primary btn-sm" ng-click="removeStudent(row.Id)">Delete</button>
+                        <button class="btn btn-primary btn-sm" ng-click="removeSubject(row.SubjectId)">Delete</button>
                     </div>
                 </td>
+                <td>{{row.SubjectId}}</td>
                 <td><span editable-text="row.Title" e-name="Title" e-form="rowform" e-required>{{row.Title}}</span></td>
-                <td><span editable-date="row.Teacher" e-name="Teacher" e-form="rowform" e-required>{{row.Teacher}}</span></td>
-                <td><span editable-number="row.NbStudents" e-name="NbStudents" e-form="rowform" e-required>{{row.NbStudents}}</span></td>
+                <td><span e-class="custom-select" editable-select="row.Teacher.Id" onshow="loadTeachersCourses()" e-name="TeacherId" e-form="rowform" e-required e-ng-options="teacher.Id as teacher.Name for teacher in teachersCourses.Teachers">{{row.Teacher.Name}}</span></td>
+                <td>{{row.NbStudents}}</td>
                 <td>
                     <div class="details-el">
                         <button class="btn btn-primary btn-sm" ng-click="showDetails(row)">Details</button>
@@ -107,17 +95,24 @@
         <div ng-show="!detailsShown">
             <form ng-submit="addSubject($event)">
                 <div class="form-group">
-                    <label for="Title">Title:</label>
-                    <input type="text" ng-model="subject.title" required class="form-control" placeholder="Enter title" id="title">
+                    <label for="SubjectId">SubjectId:</label>
+                    <input type="number" ng-model="subject.subjectId" required class="form-control" placeholder="Enter SubjectId" id="subjectId">
+                    <p class="invalid-feedback d-block" ng-if="errors.subjectId">{{errors.subjectId}}</p>
                 </div>
                 <div class="form-group">
-                    <label for="Teacher">Link Teacher: </label>
-                    <select class="custom-select" ng-model="dataSelect.teacherId" ng-options="teacher.SubjectId as teacher.Name for teacher in teachersCourses.Teachers">
-                    </select>
+                    <label for="Title">Title:</label>
+                    <input type="text" ng-model="subject.title" required class="form-control" placeholder="Enter title" id="title">
+                    <p class="invalid-feedback d-block" ng-if="errors.title">{{errors.title}}</p>
                 </div>
                 <div class="form-group">
                     <label for="Course">Link Course: </label>
-                    <select class="custom-select" ng-model="dataSelect.courseId" ng-options="course.CourseId as course.Title for course in teachersCourses.Courses">
+                    <select class="custom-select" ng-model="subject.courseId" ng-options="course.CourseId as course.Title for course in teachersCourses.Courses">
+                    </select>
+                    <p class="invalid-feedback d-block" ng-if="errors.courseId">{{errors.courseId}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="Teacher">Link Teacher: </label>
+                    <select class="custom-select" ng-model="subject.teacherId" ng-options="teacher.Id as teacher.Name for teacher in teachersCourses.Teachers">
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
