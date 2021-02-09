@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Courses";
+}
+
+
+
+
+<div class="container body-content" ng-controller="coursesCtrl">
+    <div class="alert alert-danger" ng-if="errors.global"><button type="button" class="close" data-dismiss="alert">&times;</button>{{errors.global}}</div>
+    <table st-table="displayedCollection" st-safe-src="coursesCollection" class="table table-bordered table-hover" style="cursor:pointer;">
+        <caption class="smartTableCaption">
+            Courses
+        </caption>
+
+        <thead>
+            <tr>
+                <th>
+                    <button type="button" data-toggle="modal" data-target="#pop-modal" class="btn btn-sm btn-primary">
+                        Add
+                    </button>
+                </th>
+                <th>CourseId</th>
+                <th>Course Title</th>
+                <th>Number of Teachers</th>
+                <th>Number of Students</th>
+                <th>Average Grade</th>
+            </tr>
+
+
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in displayedCollection">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form oncancel="cancelEdit()" onbeforesave="editCourse($data, row)" editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == row">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-sm">
+                            Save
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel();" class="btn btn-default btn-sm">
+                            Cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                        <button class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
+                        <button class="btn btn-primary btn-sm" ng-click="removeCourse(row.CourseId)">Delete</button>
+                    </div>
+                </td>
+                <td>{{row.CourseId}}</td>
+                <td><span editable-text="row.Title" e-name="Title" e-form="rowform" e-required>{{row.Title}}</span></td>
+                <td>{{row.NbTeachers || 0}}</td>
+                <td>{{row.Students.Total || 0}}</td>
+                <td>{{row.Students.AverageGrade || 'N/A'}}</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <pop-modal title="{{modalTitle}}">
+        <div>
+            <form ng-submit="addCourse($event)">
+                <div class="form-CourseId">
+                    <label for="SubjectId">CourseId:</label>
+                    <input type="number" ng-model="course.courseId" required class="form-control" placeholder="Enter CourseId" id="courseId">
+                    <p class="invalid-feedback d-block" ng-if="errors.courseId">{{errors.courseId}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="Title">Title:</label>
+                    <input type="text" ng-model="course.title" required class="form-control" placeholder="Enter title" id="title">
+                    <p class="invalid-feedback d-block" ng-if="errors.title">{{errors.title}}</p>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+        </div>
+    </pop-modal>
+</div>
+
+<script>
+    app.controller('coursesCtrl', ['$scope', '$http', '$q', '$compile', coursesController]);
+</script>
+

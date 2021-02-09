@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Enrollments";
+}
+
+
+
+
+<div class="container body-content" ng-controller="enrollmentsCtrl">
+    <div class="alert alert-danger" ng-if="errors.global"><button type="button" class="close" data-dismiss="alert">&times;</button>{{errors.global}}</div>
+    <table st-table="displayedCollection" st-safe-src="enrollmentsCollection" class="table table-bordered table-hover" style="cursor:pointer;">
+        <caption class="smartTableCaption">
+            Enrollments
+        </caption>
+
+        <thead>
+            <tr>
+                <th>
+                    <button type="button" data-toggle="modal" data-target="#pop-modal" class="btn btn-sm btn-primary">
+                        Add
+                    </button>
+                </th>
+                <th>Course</th>
+                <th>Course Subject</th>
+                <th>Student Enrolled</th>
+                <th>Grade</th>
+            </tr>
+
+
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in displayedCollection">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form oncancel="cancelEdit()" onbeforesave="editEnrollment($data, row)" editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == row">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-sm">
+                            Save
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel();" class="btn btn-default btn-sm">
+                            Cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                        <button class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
+                        <button class="btn btn-primary btn-sm" ng-click="removeEnrollment(row.Id)">Delete</button>
+                    </div>
+                </td>
+                <td>{{row.Course}}</td>
+                <td>{{row.Subject}}</td>
+                <td>{{row.Student}}</td>
+                <td><span editable-number="row.Grade" e-name="Grade" e-form="rowform" e-required>{{row.Grade ? row.Grade : row.Grade == 0 ? row.Grade : 'N/A'}}</span></td>
+            </tr>
+
+        </tbody>
+    </table>
+    <pop-modal title="{{modalTitle}}">
+        <div>
+            <form ng-submit="addEnrollment($event)">
+                <div class="form-group">
+                    <label for="Subject">Subject: </label>
+                    <select class="custom-select" ng-model="enrollment.subjectId" ng-options="subject.SubjectId as subject.Title for subject in prerequisites.Subjects">
+                    </select>
+                    <p class="invalid-feedback d-block" ng-if="errors.subjectId">{{errors.subjectId}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="Student">Student: </label>
+                    <select class="custom-select" ng-model="enrollment.studentId" ng-options="student.Id as student.Name for student in prerequisites.Students">
+                    </select>
+                    <p class="invalid-feedback d-block" ng-if="errors.studentId">{{errors.studentId}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="Grade">Grade:</label>
+                    <input type="number" ng-model="enrollment.grade" class="form-control" placeholder="Enter grade" id="grade">
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+        </div>
+    </pop-modal>
+</div>
+
+<script>
+    app.controller('enrollmentsCtrl', ['$scope', '$http', '$q', '$compile', enrollmentsController]);
+</script>
+

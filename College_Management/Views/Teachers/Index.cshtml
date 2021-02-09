@@ -21,8 +21,8 @@
                     </button>
                 </th>
                 <th>Teacher</th>
-                <th>Subject Teaching</th>
-                <th></th>
+                <th>Birthday</th>
+                <th>Salary</th>
             </tr>
 
 
@@ -41,11 +41,12 @@
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
                         <button class="btn btn-primary btn-sm" ng-click="rowform.$show()">Edit</button>
-                        <button class="btn btn-primary btn-sm" ng-click="removeteacher(row.teacherId)">Delete</button>
+                        <button class="btn btn-primary btn-sm" ng-click="removeTeacher(row.Id)">Delete</button>
                     </div>
                 </td>
                 <td><span editable-text="row.Name" e-name="Name" e-form="rowform" e-required>{{row.Name}}</span></td>
-                <td>{{row.Subject}}
+                <td>{{row.Birthday | date:'yyyy-MM-dd'}}</td>
+                <td><span editable-number="row.Salary" e-name="Salary" e-form="rowform" e-required>{{row.Salary}}</span></td>
             </tr>
 
         </tbody>
@@ -67,12 +68,6 @@
                     <label for="Salary">Salary:</label>
                     <input type="number" ng-model="teacher.salary" required class="form-control" placeholder="Enter salary" id="salary">
                     <p class="invalid-feedback d-block" ng-if="errors.salary">{{errors.salary}}</p>
-                </div>
-                <div class="form-group">
-                    <label for="Subject">Link Unassigned Subjects: </label>
-                    <select class="custom-select" ng-model="teacher.subjectId" ng-options="subject.SubjectId as subject.Title for subject in subjectsCollection">
-                    </select>
-                    <p class="invalid-feedback d-block" ng-if="errors.subjectId">{{errors.subjectId}}</p>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>

@@ -72,13 +72,13 @@ namespace College_Management.Controllers
 
         // POST: Subjects/Edit/5
         [HttpPost]
-        public async Task<ActionResult> Edit([Bind(Include = "SubjectId,TeacherId,CourseId,Title")] Subject subject)
+        public async Task<JsonResult> Edit([Bind(Include = "SubjectId,TeacherId,CourseId,Title")] Subject subject)
         {
             try
             {
                 db.Entry(subject).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return Json(new { result = "ok", status = 200 });
+                return Json(new { result = "ok", status = 200});
             }
             catch (Exception ex)
             {

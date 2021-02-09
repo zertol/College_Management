@@ -47,7 +47,7 @@
                 </td>
                 <td>{{row.SubjectId}}</td>
                 <td><span editable-text="row.Title" e-name="Title" e-form="rowform" e-required>{{row.Title}}</span></td>
-                <td><span e-class="custom-select" editable-select="row.Teacher.Id" onshow="loadTeachersCourses()" e-name="TeacherId" e-form="rowform" e-required e-ng-options="teacher.Id as teacher.Name for teacher in teachersCourses.Teachers">{{row.Teacher.Name}}</span></td>
+                <td><span e-class="custom-select" editable-select="row.Teacher.Id" e-name="TeacherId" e-form="rowform" e-required e-ng-options="teacher.Id as teacher.Name for teacher in teachersCourses.Teachers">{{selectTeacher(row.Teacher)}}</span></td>
                 <td>{{row.NbStudents}}</td>
                 <td>
                     <div class="details-el">
