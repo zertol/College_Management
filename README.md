@@ -15,7 +15,8 @@ Managing Students along with subjects,courses &amp; teachers.
 
 ## Installing
 
-This project can be cloned to your local repository and run using the VS2019 IDE
+- This project can be cloned to your local repository and run using the VS2019 IDE.
+- After cloning, Restore necessary packages as per the Package Manager Console.
 
 ## Built With
 
