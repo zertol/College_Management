@@ -20,7 +20,7 @@ app.directive('popModal', () => {
         link: function (scope, element, attrs) {
             scope.title = attrs.title;
         },
-        template: '<div class="modal" id="pop-modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">{{title}}</h4><button type="button" class="close" data-dismiss="modal">&times;</button></div><div class="modal-body ng-transclude"></div></div></div></div>'
+        template: '<div class="modal blabla" id="pop-modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">{{title}}</h4><button type="button" class="close" data-dismiss="modal">&times;</button></div><div class="modal-body ng-transclude"></div></div></div></div>'
     };
 });
 
